@@ -1,0 +1,6 @@
+# Set the title that is displayed above the bossbar.
+# Use %mob% for the mob name.
+title: "<red>%mob%</red>"
+
+# No touch please :)
+config-version: 1

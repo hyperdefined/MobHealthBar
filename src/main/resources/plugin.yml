@@ -1,0 +1,4 @@
+name: MobHealthBar
+version: '${project.version}'
+main: lol.hyper.mobhealthbar.MobHealthBar
+api-version: 1.19
