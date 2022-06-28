@@ -25,7 +25,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,11 +53,11 @@ public class EntityDamage implements Listener {
         }
 
         // only look at living mobs
-        if (!(event.getEntity() instanceof LivingEntity)) {
+        if (!(event.getEntity() instanceof Creature)) {
             return;
         }
 
-        LivingEntity livingEntity = (LivingEntity) event.getEntity();
+        Creature livingEntity = (Creature) event.getEntity();
         // player is hitting something
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
@@ -78,7 +80,7 @@ public class EntityDamage implements Listener {
             BossBar playerBar = mobHealthBar.playerBossBars.get(player);
             // set the progress
             playerBar.progress((float) (health / maxHealth));
-            playerBar.name(format(mobName));
+            playerBar.name(format(livingEntity));
             audiences.player(player).showBossBar(playerBar);
             BukkitTask task = Bukkit.getScheduler().runTaskLater(mobHealthBar, () -> {
                 audiences.player(player).hideBossBar(playerBar);
@@ -88,14 +90,26 @@ public class EntityDamage implements Listener {
         }
     }
 
-    private Component format(String mobName) {
-        String configTitle = mobHealthBar.config.getString("title");
+    /**
+     * Formats the title.
+     * @param entity The entity we are using.
+     * @return The formatted title.
+     */
+    private Component format(LivingEntity entity) {
+        String configTitle = null;
+        if (entity instanceof Creature) {
+            if (entity instanceof Monster) {
+                configTitle = mobHealthBar.config.getString("title.hostile");
+            } else {
+                configTitle = mobHealthBar.config.getString("title.peaceful");
+            }
+        }
         if (configTitle == null) {
             mobHealthBar.logger.warning("title is not set in the config! Using default.");
-            return Component.text(mobName);
+            return Component.text(entity.getName());
         }
         if (configTitle.contains("%mob%")) {
-            configTitle = configTitle.replace("%mob%", mobName);
+            configTitle = configTitle.replace("%mob%", entity.getName());
         }
         return miniMessage.deserialize(configTitle);
     }

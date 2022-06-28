@@ -46,8 +46,8 @@ public final class MobHealthBar extends JavaPlugin {
     public final MiniMessage miniMessage = MiniMessage.miniMessage();
     private BukkitAudiences adventure;
 
-    public HashMap<Player, BossBar> playerBossBars = new HashMap<>();
-    public HashMap<Player, BukkitTask> playerBossBarTasks = new HashMap<>();
+    public final HashMap<Player, BossBar> playerBossBars = new HashMap<>();
+    public final HashMap<Player, BukkitTask> playerBossBarTasks = new HashMap<>();
 
     public EntityDamage entityDamage;
     public PlayerJoin playerJoin;
